@@ -9,6 +9,8 @@ const userSchema = new mongoose.Schema(
     fullName: {
       type: String,
       required: [true, 'Please tell us your full name'],
+      minlength: 4,
+      maxlength: 40,
     },
     email: {
       type: String,
@@ -24,6 +26,10 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
       unique: true,
+      match: [
+        /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/,
+        'Please give us a valid username',
+      ],
     },
     password: {
       type: String,
