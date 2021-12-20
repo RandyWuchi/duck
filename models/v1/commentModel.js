@@ -4,7 +4,7 @@ const commentSchema = new mongoose.Schema(
   {
     comment: {
       type: String,
-      required: true,
+      required: [true, 'You cannot submit an empty comment'],
     },
     post: {
       type: mongoose.Schema.Types.ObjectId,
