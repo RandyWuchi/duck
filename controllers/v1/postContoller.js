@@ -78,8 +78,44 @@ exports.updatePost = catchAsync(async (req, res, next) => {
 });
 
 exports.deletePost = catchAsync(async (req, res, next) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined',
-  });
+  if (req.body.imagePublicId) {
+    const deleteImage = await deleteFromCloudinary(req.body.imagePublicId);
+
+    if (deleteImage.result !== 'ok') {
+      res.status(500).json({
+        status: 'error',
+        message: 'Something went wrong while deleting image from Cloudinary',
+      });
+    }
+
+    const post = await Post.findByIdAndRemove(req.params.id);
+
+    await User.findOneAndUpdate(
+      { _id: post.author },
+      { $pull: { posts: post._id } }
+    );
+
+    await Like.find({ post: post._id }).deleteMany();
+
+    post.likes.map(async (likeId) => {
+      await User.where({ likes: likeId }).updateMany({
+        $pull: { likes: likeId },
+      });
+    });
+
+    await Comment.find({ post: post._id }).deleteMany();
+
+    post.comments.map(async (commentId) => {
+      await User.where({ comments: commentId }).updateMany({
+        $pull: { comments: commentId },
+      });
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        post,
+      },
+    });
+  }
 });
