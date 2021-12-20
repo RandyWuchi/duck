@@ -26,6 +26,8 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
       unique: true,
+      minlength: 1,
+      maxlength: 20,
       match: [
         /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/,
         'Please give us a valid username',
