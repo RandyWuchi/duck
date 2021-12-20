@@ -28,45 +28,24 @@ const handleJWTExpiredError = () => {
 };
 
 const sendErrorDev = (err, req, res) => {
-  if (req.originalUrl.startsWith('/api')) {
-    return res.status(err.statusCode).json({
-      error: err,
-      status: err.status,
-      message: err.message,
-      stack: err.stack,
-    });
-  }
-
-  return res.status(err.statusCode).render('error', {
-    title: 'Something went wrong!',
+  return res.status(err.statusCode).json({
+    error: err,
+    status: err.status,
     message: err.message,
+    stack: err.stack,
   });
 };
 
 const sendErrorProd = (err, req, res) => {
-  if (req.originalUrl.startsWith('/api')) {
-    if (err.isOperational) {
-      return res.status(err.statusCode).json({
-        status: err.status,
-        message: err.message,
-      });
-    }
-    return res.status(500).json({
-      status: 'error',
-      message: 'Something went terribly wrong somewhere!',
-    });
-  }
-
   if (err.isOperational) {
-    return res.status(err.statusCode).render('error', {
-      title: 'Something went wrong!',
+    return res.status(err.statusCode).json({
+      status: err.status,
       message: err.message,
     });
   }
-
-  return res.status(err.statusCode).render('error', {
-    title: 'Something went wrong!',
-    message: 'Please try again later',
+  return res.status(500).json({
+    status: 'error',
+    message: 'Something went terribly wrong somewhere!',
   });
 };
 
