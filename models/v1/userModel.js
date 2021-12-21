@@ -71,6 +71,20 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+// VIRTUAL POPULATE
+userSchema.virtual('comments', {
+  ref: 'Comment',
+  foreignField: 'author',
+  localField: '_id',
+});
+
+userSchema.virtual('Like', {
+  ref: 'Like',
+  foreignField: 'user',
+  localField: '_id',
+});
+
+// DOCUMENT MIDDLEWARE: runs on .create() and .save()
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
 
@@ -88,12 +102,14 @@ userSchema.pre('save', function (next) {
   next();
 });
 
+// QUERY MIDDLEWARE
 userSchema.pre(/^find/, function (next) {
   this.find({ active: { $ne: false } });
 
   next();
 });
 
+// HELPER METHODS
 userSchema.methods.isValidPassword = async function (
   candidatePassword,
   userPassword
