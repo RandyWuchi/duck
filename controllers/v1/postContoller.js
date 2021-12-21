@@ -53,9 +53,35 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
 });
 
 exports.getPost = catchAsync(async (req, res, next) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined',
+  const post = await Post.findById(req.params.id)
+    .populate({
+      path: 'author',
+      populate: [
+        { path: 'following' },
+        { path: 'followers' },
+        {
+          path: 'notifications',
+          populate: [
+            { path: 'author' },
+            { path: 'follow' },
+            { path: 'like' },
+            { path: 'comment' },
+          ],
+        },
+      ],
+    })
+    .populate('likes')
+    .populate({
+      path: 'comments',
+      options: { sort: { createdAt: -1 } },
+      populate: { path: 'author' },
+    });
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      post,
+    },
   });
 });
 
