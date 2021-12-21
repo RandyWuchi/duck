@@ -60,48 +60,6 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    posts: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Post',
-      },
-    ],
-    likes: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Like',
-      },
-    ],
-    comments: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Comment',
-      },
-    ],
-    followers: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Follow',
-      },
-    ],
-    following: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Follow',
-      },
-    ],
-    notifications: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Notification',
-      },
-    ],
-    messages: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-      },
-    ],
     active: {
       type: Boolean,
       default: true,

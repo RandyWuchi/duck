@@ -2,25 +2,16 @@ const mongoose = require('mongoose');
 
 const postSchema = new mongoose.Schema(
   {
-    title: String,
+    title: {
+      type: String,
+      maxlength: 140,
+    },
     image: String,
     imagePublicId: String,
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    likes: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Like',
-      },
-    ],
-    comments: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Comment',
-      },
-    ],
   },
   {
     timestamps: true,

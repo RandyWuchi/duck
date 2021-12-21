@@ -6,13 +6,13 @@ const commentSchema = new mongoose.Schema(
       type: String,
       required: [true, 'You cannot submit an empty comment'],
     },
-    post: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Post',
-    },
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
+    },
+    post: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Posts',
     },
   },
   {
