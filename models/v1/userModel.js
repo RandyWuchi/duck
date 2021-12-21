@@ -93,7 +93,7 @@ const userSchema = new mongoose.Schema(
     notifications: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Notificatioon',
+        ref: 'Notification',
       },
     ],
     messages: [
