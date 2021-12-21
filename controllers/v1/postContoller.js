@@ -12,9 +12,43 @@ const Post = require('./../../models/v1/postModel');
 const Notification = require('./../../models/v1/notificationModel');
 
 exports.getAllPosts = catchAsync(async (req, res, next) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined',
+  const query = {
+    $and: [{ image: { $ne: null } }, { author: { $ne: req.body.authUserId } }],
+  };
+  const posts = await Post.find(query)
+    .populate({
+      path: 'author',
+      populate: [
+        { path: 'following' },
+        { path: 'followers' },
+        {
+          path: 'notifications',
+          populate: [
+            { path: 'author' },
+            { path: 'follow' },
+            { path: 'like' },
+            { path: 'comment' },
+          ],
+        },
+      ],
+    })
+    .populate('likes')
+    .populate({
+      path: 'comments',
+      options: { sort: { createdAt: 'desc' } },
+      populate: { path: 'author' },
+    })
+    .skip(parseInt(req.body.skip))
+    .limit(parseInt(req.body.limit))
+    .sort({ createdAt: 'desc' });
+
+  res.status(200).json({
+    status: 'success',
+    requestedAt: req.requestTime,
+    results: posts.length,
+    data: {
+      posts,
+    },
   });
 });
 
