@@ -122,6 +122,11 @@ userSchema.pre(/^find/, function (next) {
   next();
 });
 
+userSchema.pre(/^find/, function (next) {
+  this.populate('posts').populate('comments').populate('likes');
+  next();
+});
+
 // HELPER METHODS
 userSchema.methods.isValidPassword = async function (
   candidatePassword,
