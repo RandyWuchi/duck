@@ -37,7 +37,7 @@ postSchema.virtual('likes', {
 
 // QUERY MIDDLEWARE
 postSchema.pre(/^find/, function (next) {
-  this.populate('author').populate('likes').populate('comments');
+  this.populate('author');
   next();
 });
 

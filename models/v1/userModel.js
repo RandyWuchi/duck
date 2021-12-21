@@ -123,7 +123,7 @@ userSchema.pre(/^find/, function (next) {
 });
 
 userSchema.pre(/^find/, function (next) {
-  this.populate('posts').populate('comments').populate('likes');
+  this.populate('posts');
   next();
 });
 
