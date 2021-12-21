@@ -7,16 +7,18 @@ const commentSchema = new mongoose.Schema(
       required: [true, 'You cannot submit an empty comment'],
     },
     author: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.ObjectId,
       ref: 'User',
     },
     post: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Posts',
+      type: mongoose.Schema.ObjectId,
+      ref: 'Post',
     },
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 

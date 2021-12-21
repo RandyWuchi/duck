@@ -56,6 +56,11 @@ const userSchema = new mongoose.Schema(
     imagePublicId: String,
     coverImage: String,
     coverImagePublicId: String,
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user',
+    },
     isOnline: {
       type: Boolean,
       default: false,
@@ -68,6 +73,8 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 
@@ -78,9 +85,15 @@ userSchema.virtual('comments', {
   localField: '_id',
 });
 
-userSchema.virtual('Like', {
+userSchema.virtual('likes', {
   ref: 'Like',
   foreignField: 'user',
+  localField: '_id',
+});
+
+userSchema.virtual('posts', {
+  ref: 'Post',
+  foreignField: 'author',
   localField: '_id',
 });
 

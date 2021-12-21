@@ -9,7 +9,7 @@ const postSchema = new mongoose.Schema(
     image: String,
     imagePublicId: String,
     author: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.ObjectId,
       ref: 'User',
     },
   },
@@ -36,6 +36,10 @@ postSchema.virtual('likes', {
 // DOCUMENT MIDDLEWARE: runs on .create() and .save()
 
 // QUERY MIDDLEWARE
+postSchema.pre(/^find/, function (next) {
+  this.populate('author');
+  next();
+});
 
 // AGGREGATION MIDDLEWARE
 
