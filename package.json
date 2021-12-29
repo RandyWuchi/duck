@@ -4,7 +4,7 @@
   "description": "A social media app that connect friends and finds new friends around the world",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "nodemon --max-old-space-size=4096 server.js",
     "start:prod": "NODE_ENV=production nodemon server.js"
   },
   "repository": {

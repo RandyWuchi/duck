@@ -99,10 +99,13 @@ userSchema.virtual('posts', {
 
 // DOCUMENT MIDDLEWARE: runs on .create() and .save()
 userSchema.pre('save', async function (next) {
+  // Only run if password has been modified
   if (!this.isModified('password')) return next();
 
+  // Hash password with the cost of 12
   this.password = await bcrypt.hash(this.password, 12);
 
+  // Delete PasswordConfim
   this.passwordConfirm = undefined;
   next();
 });
@@ -122,12 +125,7 @@ userSchema.pre(/^find/, function (next) {
   next();
 });
 
-userSchema.pre(/^find/, function (next) {
-  this.populate('posts');
-  next();
-});
-
-// HELPER METHODS
+// INSTANCE METHODS
 userSchema.methods.isValidPassword = async function (
   candidatePassword,
   userPassword

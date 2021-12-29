@@ -37,7 +37,10 @@ postSchema.virtual('likes', {
 
 // QUERY MIDDLEWARE
 postSchema.pre(/^find/, function (next) {
-  this.populate('author');
+  this.populate({
+    path: 'author',
+    select: 'username fullName',
+  });
   next();
 });
 
