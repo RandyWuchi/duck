@@ -1,14 +1,16 @@
 const nodemailer = require('nodemailer');
+const pug = require('pug');
+const htmlToText = require('html-to-text');
 
 module.exports = class Email {
   constructor(user, url) {
     this.to = user.email;
     this.firstName = user.name.split(' ')[0];
     this.url = url;
-    this.from = 'Ruck Social <ruck@rucksocial.com>';
+    this.from = `Ruck Social <${process.env.EMAIL_FROM}>`;
   }
 
-  createTransport() {
+  newTransport() {
     if (process.env.NODE_ENV === 'production') {
       // Sendgrid
       return 1;
@@ -25,32 +27,34 @@ module.exports = class Email {
   }
 
   // Send actual email
-  send(template, subject) {
-    // Render HTML template
+  async send(template, subject) {
+    // Render HTML based on a pug template
+    const html = pug.renderFile(`${__dirname}/../views/${template}.pug`, {
+      firstName: this.firstName,
+      url: this.url,
+      subject,
+    });
+
     // Define mail options
+    const mailOptions = {
+      from: this.from,
+      to: this.to,
+      subject,
+      html,
+      text: htmlToText.htmlToText(html),
+    };
     // Create transport and send email
+    await this.newTransport().sendMail(mailOptions);
   }
-};
 
-const sendEmail = async (options) => {
-  // Create a transport
-  const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-  });
+  async sendWelcome() {
+    await this.send('welcome', 'Welcome to the Ruck Family');
+  }
 
-  // Define the options
-  const mailOptions = {
-    from: 'Ruck Social <ruck@rucksocial.com>',
-    to: options.email,
-    subject: options.subject,
-    text: options.message,
-  };
-
-  // Send the email
-  await transporter.sendMail(mailOptions);
+  async sendPasswordReset() {
+    await this.send(
+      'resetPassword',
+      'Your password reset token (Valid for only 10 minutes)'
+    );
+  }
 };
